@@ -1,0 +1,103 @@
+# Tagmatic — Operational alert thresholds
+#
+#The breach thresholds in this file trace to commitments made in the Phase 1
+# Operations Plan. Phase 2 adds warning bands for the three performance KPIs
+# to provide an early signal before a Phase 1 commitment is breached.
+#
+# The PII escape KPI has no practical warning state: zero is within limit,
+# while one or more occurrences immediately constitute a breach.
+# Operations Plan (ARTI 409 Final Project, The Outliers, 2026-06-28).
+# Thresholds live in config rather than in code for the same reason the
+# label taxonomy does: they are governance artefacts, so changes go through
+# review and leave an audit trail.
+#
+# Change control: PR required. Reviewer = monitoring owner (Ludwig Cardoso).
+# Approver = team lead (Barbara Alfaro). Never edit on main.
+
+meta:
+  config_version: "1.0.0"
+  taxonomy_version: "1.4.0"
+  model_version: "llama3.1:8b-instruct-q4_K_M"
+  baseline_established: "2026-06-28"   # end of Sprint 1, first labelled hold-out run
+  owner: "Ludwig Cardoso"
+  approver: "Barbara Alfaro"
+
+kpis:
+
+  review_flag_rate:
+    label: "Human-review flag rate"
+    unit: "percent"
+    direction: "lower_is_better"
+    warn_at: 0.15
+    breach_at: 0.20
+    source: "Phase 1 §2, Operations Objective 1"
+    rationale: >
+      Phase 1 committed to raising a retuning trigger within 48 hours if the
+      review-flag rate exceeds 20% in any sprint. The confidence gate is the
+      safety mechanism, so a rising flag rate is the earliest visible signal
+      that the model no longer fits the ticket vocabulary. The 15% warn band
+      was added in Phase 2 to give the team a sprint of lead time rather than
+      discovering the breach at sprint close.
+    risk_ref: "R1 — LLM classification drift"
+    runbook: "RB-01"
+
+  per_label_f1_delta:
+    label: "Worst per-label F1 drop vs baseline"
+    unit: "percentage_points"
+    direction: "lower_is_better"
+    warn_at: 0.03
+    breach_at: 0.05
+    source: "Phase 1 §2, Operations Objective 1"
+    rationale: >
+      Phase 1 set a 5 percentage point drop from baseline on any single label
+      as a retuning trigger. Per-label rather than aggregate, because a rare
+      but high-impact ticket type can collapse while overall accuracy holds.
+      Baselines are frozen per label at config_version and only re-baselined
+      after an approved retune.
+    risk_ref: "R1 — LLM classification drift"
+    runbook: "RB-01"
+
+  primary_label_accuracy:
+    label: "Primary-label accuracy (hold-out)"
+    unit: "percent"
+    direction: "higher_is_better"
+    warn_at: 0.87
+    breach_at: 0.85
+    source: "Phase 1 §2, Operations Objective 3"
+    rationale: >
+      Phase 1 committed to holding primary-label accuracy above 85% across all
+      active ticket types for the project lifecycle. Measured against the
+      held-out labelled set, not live traffic, so the number is comparable
+      across model versions.
+    risk_ref: "R1 — LLM classification drift"
+    runbook: "RB-01"
+
+  pii_escapes:
+    label: "PII censor escapes"
+    unit: "count"
+    direction: "lower_is_better"
+    warn_at: null
+    breach_at: 1
+    source: "Phase 1 §2, Operations Objective 2"
+    rationale: >
+      Phase 1 classified any PII false negative — identifiable data reaching
+      the LLM, the vector store, or a GitHub Issue — as a P1 incident requiring
+      triage, containment and a report to the instructor within 24 hours.
+      There is no acceptable non-zero rate, so the breach threshold is a single
+      occurrence rather than a rate.
+    risk_ref: "R2 — PII false negative"
+    runbook: "RB-02"
+
+# Per-label F1 baselines, frozen at baseline_established.
+# Re-baselining requires an approved retune and a config_version bump.
+baselines:
+  access_request: 0.947
+  bug_report: 0.919
+  documentation: 0.868
+  feature_request: 0.923
+  question: 0.876
+
+# Languages the PII censor has been validated against.
+# Anything outside this list is treated as unvalidated: see RB-02.
+censor_validated_languages:
+  - en
