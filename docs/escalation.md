@@ -42,11 +42,6 @@ does not.
 
 ## Sev 1 — PII censor escape
 
-Containment starts before notification. The security owner disables auto-labelling
-and preserves evidence first; only then does the client clock matter. Opening a
-channel thread before the pipeline is stopped risks a second disclosure while
-people are still typing.
-
 Only the team lead contacts the client. Not the person who found the escape,
 not the security owner, not whoever is closest to the keyboard. A privacy
 incident reported through three different people in ninety minutes is a second
@@ -125,6 +120,12 @@ entitled to know before they hear it from their own label quality.
 
 No escalation. Logged at sprint close by the monitoring owner and reviewed in
 the sprint summary.
+
+On the dashboard this is the **Approaching** state: the metric has crossed its
+Phase 2 warn threshold but has not yet broken a Phase 1 commitment. The on-call
+person does not open a runbook at Sev 3; they note the trend and watch the next
+sprint. PII escapes never appear here — that KPI has no warn band, so the first
+nonzero count is already Sev 1.
 
 The warn bands exist so that this level has somewhere to live. Phase 1 defined
 breach points only, which meant every signal arrived as a Sev 2. Sprint 3 of

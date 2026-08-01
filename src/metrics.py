@@ -16,7 +16,6 @@ from pathlib import Path
 import pandas as pd
 import yaml
 
-
 def _find_root(start: Path) -> Path:
     """Locate the project folder by walking up until config/thresholds.yaml appears.
 
@@ -87,12 +86,15 @@ def classify(
     breach_at: float,
     higher_is_better: bool,
 ) -> str:
-    """Return ok / warn / breach for a value against its two bands.
+    """Return ok / warn / breach for a value against its configured bands.
 
-    Phase 1 commitments live at breach_at. Phase 2 warning bands (warn_at) give
-    a sprint of lead time before that commitment is crossed. When warn_at is
-    None — the PII escape KPI — there is no early signal: zero is within limit
-    and any occurrence is an immediate breach (Phase 1 Objective 2 / R2).
+    Thresholds come from config/thresholds.yaml — never hard-coded at the call
+    site. Phase 1 defined breach points only; Phase 2 added warn bands so the
+    on-call person gets a Sev 3 signal before a Phase 1 commitment is lost.
+
+    ``warn_at`` may be ``None`` when a KPI has no warning band. That is the
+    intentional design for PII escapes: zero is within limit, and any
+    occurrence is immediately a breach (Sev 1), with no intermediate state.
     """
     if higher_is_better:
         if value < breach_at:

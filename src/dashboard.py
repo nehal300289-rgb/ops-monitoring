@@ -342,25 +342,6 @@ else:
         unsafe_allow_html=True,
     )
 
-def band_help(kpi: m.Kpi) -> str:
-    """Short on-card copy distinguishing the Phase 2 warn band from the Phase 1 breach."""
-    if kpi.key == "pii_escapes":
-        return "No warn band — any escape is an immediate breach (P1)."
-    if kpi.key == "primary_label_accuracy":
-        return (
-            f"Warn below {kpi.warn_at:.0%} · breach below {kpi.breach_at:.0%} "
-            "(higher is better)."
-        )
-    if kpi.key == "per_label_f1_delta":
-        return (
-            f"Warn above {kpi.warn_at * 100:.0f} pp drop · "
-            f"breach above {kpi.breach_at * 100:.0f} pp drop."
-        )
-    return (
-        f"Warn above {kpi.warn_at:.0%} · breach above {kpi.breach_at:.0%}."
-    )
-
-
 cols = st.columns(4, gap="small")
 for col, kpi in zip(cols, kpis):
     colour = STATUS_COLOUR[kpi.status]
@@ -372,9 +353,6 @@ for col, kpi in zip(cols, kpis):
               <div class="tg-value" style="color:{colour}">{kpi.display}</div>
               <div class="tg-status" style="color:{colour}">{STATUS_WORD[kpi.status]}</div>
               <div class="tg-threshold">{kpi.threshold_text}</div>
-              <div class="tg-threshold" style="border-bottom:0;padding-bottom:0;padding-top:.35rem">
-                {band_help(kpi)}
-              </div>
               <div class="tg-prov">
                 <b>{kpi.source}</b><br>
                 risk <b>{kpi.risk_ref.split(' — ')[0]}</b> ·
@@ -384,6 +362,20 @@ for col, kpi in zip(cols, kpis):
             """,
             unsafe_allow_html=True,
         )
+
+st.markdown(
+    f"""
+    <div class="tg-note" style="margin:.2rem 0 1.1rem">
+      Status bands:&nbsp;
+      <b style="color:{OK}">Within limit</b> — below the warn threshold ·
+      <b style="color:{WARN}">Approaching</b> — past warn, Phase 1 commitment not yet breached
+      (Sev 3; review at sprint close) ·
+      <b style="color:{BREACH}">Breached</b> — Phase 1 commitment violated; open the named
+      runbook (Sev 2 for drift, Sev 1 for any PII escape — PII has no warn band).
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
 with st.expander("Why these four, and why these numbers"):
     for kpi in kpis:
@@ -532,9 +524,9 @@ st.markdown(
     <div class="tg-foot">
       Thresholds v{meta['config_version']} · baselines established {meta['baseline_established']} ·
       config owner {meta['owner']} · approver {meta['approver']}<br>
-      Sources: <code>data/classification_log.csv</code> (synthetic simulated classifier traffic ),
+      Sources: <code>data/classification_log.csv</code> (synthetic simulated classifier traffic),
       <code>data/holdout_eval.csv</code> (fixed labelled set, re-scored per sprint).
-      Synthetic data — Actual ticket content is not committed to this repository.
+      Synthetic data — actual ticket content is not committed to this repository.
     </div>
     """,
     unsafe_allow_html=True,

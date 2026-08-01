@@ -9,6 +9,11 @@ Owner: Barbara Alfaro (team lead) · Last reviewed: 2026-07-31
 
 ## Why these three events
 
+Dashboard status maps onto this matrix only at breach: **Approaching** (warn)
+stays with the monitoring owner as a Sev 3 note, while **Breached** opens the
+runbook and the approval path below. PII is the exception — there is no warn
+state, so the first escape enters the privacy-incident row immediately.
+
 The Phase 2 brief offers "pushing a new model version, a bias complaint, a
 privacy incident" as examples. Two of those are used here; the third is not.
 
@@ -97,9 +102,6 @@ Requiring a PR with a named approver is the whole mitigation.
 ### 3 · PII censor escape (privacy incident)
 
 Triggered by any occurrence of the PII escape KPI — a single event, not a rate.
-The regression suite in `tests/test_censor.py` guards the pattern checks that
-back this KPI; a failing censor test is treated as a release blocker, not a
-nice-to-have.
 
 | Step | Who | Clock |
 |---|---|---|

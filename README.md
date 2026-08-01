@@ -64,23 +64,16 @@ ops-monitoring/
 ├── scripts/
 │   └── generate_sample_log.py seeded synthetic data generator
 ├── src/
-│   ├── censor.py              lightweight PII pattern checks for CI
+│   ├── censor.py              lightweight PII pattern checks for regression
 │   ├── metrics.py             KPI computation, no UI imports
 │   └── dashboard.py           Streamlit layer
 ├── tests/
 │   ├── test_censor.py         PII censor regression suite
-│   └── test_metrics.py        KPI band classification tests
+│   └── test_metrics.py        warn / breach band classification
 ├── .gitignore
 ├── requirements.txt
 └── README.md
 ```
-
-Run the regression suite with:
-
-```bash
-python -m unittest discover -s tests -v
-```
-
 
 Two design decisions worth calling out to a reviewer:
 
