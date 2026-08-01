@@ -33,7 +33,7 @@ operationalises.
 | Governance event | Accountable | Responsible | Consulted | Informed | Phase 1 risk | AI RMF |
 |---|---|---|---|---|---|---|
 | Deploy a new model or prompt version | Barbara | Nehal | Ludwig, William | Client, instructor | R1 | Manage |
-| Change the label taxonomy (YAML) | Barbara | Nehal | Ludwig, William | Team, client | R3 | Govern |
+| Change the label taxonomy | Barbara | Nehal | Ludwig, William | Team, client | R3 | Govern |
 | PII censor escape (privacy incident) | Barbara | William | Ava Industries, Nehal | Instructor, team | R2 | Manage |
 
 **R** — completes or drives the work
@@ -81,23 +81,40 @@ A model change invalidates the frozen per-label baselines in
 effect of the deployment — otherwise a bad deploy silently redefines what
 "normal" means.
 
-### 2 · Change the label taxonomy (YAML)
+### 2 · Change the label taxonomy
 
 Triggered at sprint close, or on any recurrence of the unknown-label pattern in
 logs.
 
 | Step | Who |
 |---|---|
-| Open a PR against the taxonomy files | Nehal (R) |
+| Propose the label change, with the `AI_` name and the dimension it belongs to | Nehal (R) |
 | Review classification impact on the hold-out set | Ludwig (C) |
 | Review whether new labels expand the PII surface | William (C) |
 | Approve and merge | Barbara (A) |
 | Notify team and client of the new vocabulary | Barbara (A) |
 
-This row is the control for R3. Phase 1 registered unauthorized taxonomy
-modification as High likelihood precisely because YAML files are easy to edit
-and the consequences are invisible until classification degrades at scale.
-Requiring a PR with a named approver is the whole mitigation.
+This row is the control for R3, and it carries more weight than it did in
+Phase 1. The taxonomy then lived in YAML files in a private repository, so a
+change was a pull request and code review was the mitigation. It now lives in
+the client repository's GitHub label space, which has no PR gate: anyone with
+write access can create a label, and the classifier will treat it as valid the
+moment it exists.
+
+So the approval path below is not a formality layered on top of an existing
+control — it is the only control. Phase 1 rated unauthorized taxonomy
+modification High likelihood because the consequences stay invisible until
+classification degrades at scale, and moving off YAML removed the gate that
+made the rating tolerable. Phase 3 proposes restricting label creation at the
+repository level to close the gap properly.
+
+Every label the classifier applies carries the reserved `AI_` prefix:
+`AI_label_<category>_<subcategory>` across type, workflow, area_of_emr and
+general_label, plus `AI_cluster_<name>`. Two operational consequences follow.
+Attribution: a label without the prefix was applied by a human, so "what did the
+model decide" is a query rather than an inference. Rollback: removing everything
+matching `AI_*` is bounded and reversible, which is what RB-01 needs and what
+stripping labels indiscriminately could never be.
 
 ### 3 · PII censor escape (privacy incident)
 

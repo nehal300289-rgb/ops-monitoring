@@ -78,9 +78,16 @@ ops-monitoring/
 Two design decisions worth calling out to a reviewer:
 
 **Thresholds live in config, not code.** They are governance artefacts, so
-changes go through a PR and leave an audit trail — the same argument that puts
-the label taxonomy in YAML. Reviewer is the monitoring owner, approver is the
-team lead. Nobody edits thresholds on `main`.
+changes go through a PR and leave an audit trail. Reviewer is the monitoring
+owner, approver is the team lead. Nobody edits thresholds on `main`.
+
+The label taxonomy is deliberately *not* held here. It lives in the client
+repository's own GitHub label space, under a reserved `AI_` prefix —
+`AI_label_<category>_<subcategory>` for the four classification dimensions and
+`AI_cluster_<name>` for grouping. That prefix is what makes a rollback bounded:
+removing everything matching `AI_*` undoes a bad model version without touching
+labels a human applied. The trade-off is that GitHub's label space has no PR
+gate, so the control for R3 is the RACI approval path rather than code review.
 
 **Metrics are separate from the UI.** `src/metrics.py` imports pandas and yaml
 but not Streamlit, so the same computations can be called from a scheduled job
