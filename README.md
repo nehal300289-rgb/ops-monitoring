@@ -23,7 +23,7 @@ and screenshots are reproducible.
 
 ## The four KPIs
 
-Each one enforces a commitment the team already made in Phase 1. Each KPI enforces an operational commitment established in Phase 1. The breach
+Each KPI enforces an operational commitment established in Phase 1. The breach
 thresholds trace directly to §2 of the Phase 1 proposal. Phase 2 adds warning
 bands for the three performance KPIs so the team receives an early signal
 before a Phase 1 commitment is breached. The PII escape KPI intentionally has
@@ -64,14 +64,23 @@ ops-monitoring/
 ├── scripts/
 │   └── generate_sample_log.py seeded synthetic data generator
 ├── src/
+│   ├── censor.py              lightweight PII pattern checks for CI
 │   ├── metrics.py             KPI computation, no UI imports
 │   └── dashboard.py           Streamlit layer
 ├── tests/
-│   └── test_censor.py         PII censor regression suite
+│   ├── test_censor.py         PII censor regression suite
+│   └── test_metrics.py        KPI band classification tests
 ├── .gitignore
 ├── requirements.txt
 └── README.md
 ```
+
+Run the regression suite with:
+
+```bash
+python -m unittest discover -s tests -v
+```
+
 
 Two design decisions worth calling out to a reviewer:
 

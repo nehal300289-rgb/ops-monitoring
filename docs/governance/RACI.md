@@ -97,6 +97,9 @@ Requiring a PR with a named approver is the whole mitigation.
 ### 3 · PII censor escape (privacy incident)
 
 Triggered by any occurrence of the PII escape KPI — a single event, not a rate.
+The regression suite in `tests/test_censor.py` guards the pattern checks that
+back this KPI; a failing censor test is treated as a release blocker, not a
+nice-to-have.
 
 | Step | Who | Clock |
 |---|---|---|

@@ -42,6 +42,11 @@ does not.
 
 ## Sev 1 — PII censor escape
 
+Containment starts before notification. The security owner disables auto-labelling
+and preserves evidence first; only then does the client clock matter. Opening a
+channel thread before the pipeline is stopped risks a second disclosure while
+people are still typing.
+
 Only the team lead contacts the client. Not the person who found the escape,
 not the security owner, not whoever is closest to the keyboard. A privacy
 incident reported through three different people in ninety minutes is a second

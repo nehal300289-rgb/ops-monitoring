@@ -16,6 +16,7 @@ from pathlib import Path
 import pandas as pd
 import yaml
 
+
 def _find_root(start: Path) -> Path:
     """Locate the project folder by walking up until config/thresholds.yaml appears.
 
@@ -80,17 +81,28 @@ def sprints() -> list[int]:
     return sorted(load_live()["sprint"].unique().tolist())
 
 
-def classify(value: float, warn_at: float, breach_at: float, higher_is_better: bool) -> str:
-    """Return ok / warn / breach for a value against its two bands."""
+def classify(
+    value: float,
+    warn_at: float | None,
+    breach_at: float,
+    higher_is_better: bool,
+) -> str:
+    """Return ok / warn / breach for a value against its two bands.
+
+    Phase 1 commitments live at breach_at. Phase 2 warning bands (warn_at) give
+    a sprint of lead time before that commitment is crossed. When warn_at is
+    None — the PII escape KPI — there is no early signal: zero is within limit
+    and any occurrence is an immediate breach (Phase 1 Objective 2 / R2).
+    """
     if higher_is_better:
         if value < breach_at:
             return BREACH
-        if value < warn_at:
+        if warn_at is not None and value < warn_at:
             return WARN
         return OK
     if value >= breach_at:
         return BREACH
-    if value > warn_at:
+    if warn_at is not None and value > warn_at:
         return WARN
     return OK
 
