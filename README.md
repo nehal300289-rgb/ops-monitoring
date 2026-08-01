@@ -45,6 +45,8 @@ Risk IDs refer to the Phase 1 risk register: **R1** LLM classification drift,
 
 ```
 ops-monitoring/
+├── .github/
+│   └── CODEOWNERS             review + approval routing per artefact
 ├── .streamlit/
 │   └── config.toml            Streamlit theme configuration
 ├── config/
@@ -52,11 +54,20 @@ ops-monitoring/
 ├── data/
 │   ├── classification_log.csv synthetic simulated classifier traffic
 │   └── holdout_eval.csv       fixed synthetic labelled set
+├── docs/
+│   ├── governance/
+│   │   └── RACI.md            who decides, does, is consulted, is told
+│   ├── runbooks/
+│   │   ├── RB-01-...md        classification drift
+│   │   └── RB-02-...md        PII censor escape
+│   └── escalation.md          severity ladder + client contact paths
 ├── scripts/
 │   └── generate_sample_log.py seeded synthetic data generator
 ├── src/
 │   ├── metrics.py             KPI computation, no UI imports
 │   └── dashboard.py           Streamlit layer
+├── tests/
+│   └── test_censor.py         PII censor regression suite
 ├── .gitignore
 ├── requirements.txt
 └── README.md
@@ -72,6 +83,27 @@ team lead. Nobody edits thresholds on `main`.
 **Metrics are separate from the UI.** `src/metrics.py` imports pandas and yaml
 but not Streamlit, so the same computations can be called from a scheduled job
 or a GitHub Action later without dragging in a web framework.
+
+---
+
+## When a KPI breaches
+
+The dashboard names the runbook; the runbook names the procedure; the RACI
+names who approves it. Every path below resolves — a runbook that cites a file
+which does not exist is a document, not a procedure.
+
+| Artefact | What it answers |
+|---|---|
+| [`docs/runbooks/`](docs/runbooks/) | What do I do right now, and how do I roll back? |
+| [`docs/governance/RACI.md`](docs/governance/RACI.md) | Who approves the fix, and who has to be told? |
+| [`docs/escalation.md`](docs/escalation.md) | Who do I contact, in what order, on what clock? |
+| [`.github/CODEOWNERS`](.github/CODEOWNERS) | Who has to review a change to any of the above? |
+
+Governance events map to the Phase 1 risk register rather than to generic
+examples: a model or prompt deployment controls **R1**, a taxonomy change
+controls **R3**, and a censor escape controls **R2**. Two Phase 1 risks — key-person
+dependency (R4) and demo-day scope creep (R5) — are managed through the
+contribution split and the Phase 3 scope line, not through an approval path.
 
 ---
 
