@@ -17,7 +17,7 @@
 meta:
   config_version: "1.0.0"
   taxonomy_version: "1.4.0"
-  model_version: "llama3.1:8b-instruct-q4_K_M"
+  model_version: "qwen3.5:9b"
   baseline_established: "2026-06-28"   # end of Sprint 1, first labelled hold-out run
   owner: "Ludwig Cardoso"
   approver: "Barbara Alfaro"
