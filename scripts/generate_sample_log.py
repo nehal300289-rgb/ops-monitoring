@@ -48,7 +48,7 @@ SEED = 409
 DATA_DIR = Path(__file__).resolve().parents[1] / "data"
 
 TAXONOMY_VERSION = "1.4.0"
-MODEL_VERSION = "llama3.1:8b-instruct-q4_K_M"
+MODEL_VERSION = "qwen3.5:9b"
 CONFIDENCE_GATE = 0.72  # below this, the ticket is held for human review
 
 TICKET_TYPES = [

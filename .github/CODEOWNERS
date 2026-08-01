@@ -1,0 +1,52 @@
+# CODEOWNERS — Tagmatic operations monitoring
+#
+# Every path below is a governance artefact: changing it changes what the team
+# has committed to, what triggers an incident, or who is accountable when one
+# happens. Review is required by the owner named in the Phase 1 roles table,
+# and the team lead approves.
+#
+# This file exists so that the change-control statement in README.md and
+# config/thresholds.yaml is enforced rather than described. Enable branch
+# protection on `main` with "Require review from Code Owners" for it to bind.
+#
+# Roles (Phase 1 team charter):
+#   Barbara Alfaro   lead        approver on all governance artefacts
+#   Nehal Gadhavi    data        taxonomy, drift, retune procedure
+#   Ludwig Cardoso   monitoring  KPIs, thresholds, baselines
+#   William Makino   security    censoring layer, PII incident response
+#
+# TODO before merge: replace the placeholder handles below with the real
+# GitHub usernames. An unresolvable handle silently disables the rule.
+
+# Default — the lead reviews anything not claimed by a specific owner.
+*                               @barbaraalfaro17
+
+# Alert thresholds, warn bands, and frozen baselines.
+# Reviewer = monitoring owner. Approver = team lead.
+# Re-baselining after a retune requires both: a metric owner who can move his
+# own baseline unreviewed is not a control.
+/config/thresholds.yaml         @ingenriquecardosoalfonso @barbaraalfaro17
+
+# KPI computation. Changing how a metric is calculated changes whether a
+# Phase 1 commitment reads as met, so it routes the same way as the thresholds.
+/src/metrics.py                 @ingenriquecardosoalfonso @barbaraalfaro17
+
+# Dashboard presentation layer.
+/src/dashboard.py               @ingenriquecardosoalfonso
+/.streamlit/                    @ingenriquecardosoalfonso
+
+# Incident runbooks. The owner of the risk owns the procedure for it.
+/docs/runbooks/RB-01*           @nehal300289-rgb @barbaraalfaro17
+/docs/runbooks/RB-02*           @wmakino @barbaraalfaro17
+
+# Governance documents. Lead only.
+/docs/governance/               @barbaraalfaro17
+/docs/escalation.md             @barbaraalfaro17
+/.github/CODEOWNERS             @barbaraalfaro17
+
+# Synthetic data generator. Reproducibility of the demonstrated scenario
+# depends on the seed, so changes are reviewed by data and monitoring.
+/scripts/generate_sample_log.py @nehal300289-rgb @ingenriquecardosoalfonso
+
+# Security-relevant tests.
+/tests/                         @wmakino
