@@ -88,7 +88,7 @@ logs.
 
 | Step | Who |
 |---|---|
-| Propose the label change, with the `AI_` name and the dimension it belongs to | Nehal (R) |
+| Propose the label change, with its name, dimension, and whether it carries the (Label for AI) marker | Nehal (R) |
 | Review classification impact on the hold-out set | Ludwig (C) |
 | Review whether new labels expand the PII surface | William (C) |
 | Approve and merge | Barbara (A) |
@@ -108,13 +108,9 @@ classification degrades at scale, and moving off YAML removed the gate that
 made the rating tolerable. Phase 3 proposes restricting label creation at the
 repository level to close the gap properly.
 
-Every label the classifier applies carries the reserved `AI_` prefix:
-`AI_label_<category>_<subcategory>` across type, workflow, area_of_emr and
-general_label, plus `AI_cluster_<name>`. Two operational consequences follow.
-Attribution: a label without the prefix was applied by a human, so "what did the
-model decide" is a query rather than an inference. Rollback: removing everything
-matching `AI_*` is bounded and reversible, which is what RB-01 needs and what
-stripping labels indiscriminately could never be.
+Eligibility is recorded in the label description: (Label for AI) makes a label available to the classifier, (AI Cluster) marks it as an active theme. A single label may carry both. The classifier refuses to apply anything unmarked, so approving this change is what admits a label into the model's vocabulary at all.
+
+One consequence is worth stating plainly, because an earlier design hid it. Markers describe eligibility, not authorship — a marked label carries no evidence of who applied it to a given issue. This replaced an AI_ name prefix under which authorship was self-evident and rollback was a single glob. Both now read from the GitHub issue timeline, where labeled events record the actor: authoritative, but a per-issue query rather than a name match, and RB-01 step 3 depends on it.
 
 ### 3 · PII censor escape (privacy incident)
 
