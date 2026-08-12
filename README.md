@@ -81,13 +81,9 @@ Two design decisions worth calling out to a reviewer:
 changes go through a PR and leave an audit trail. Reviewer is the monitoring
 owner, approver is the team lead. Nobody edits thresholds on `main`.
 
-The label taxonomy is deliberately *not* held here. It lives in the client
-repository's own GitHub label space, under a reserved `AI_` prefix —
-`AI_label_<category>_<subcategory>` for the four classification dimensions and
-`AI_cluster_<name>` for grouping. That prefix is what makes a rollback bounded:
-removing everything matching `AI_*` undoes a bad model version without touching
-labels a human applied. The trade-off is that GitHub's label space has no PR
-gate, so the control for R3 is the RACI approval path rather than code review.
+The label taxonomy is deliberately not held here. It lives in the client repository's own GitHub label space. A label is eligible for the classifier only if its description carries (Label for AI); active theme labels carry (AI Cluster). The classifier refuses anything unmarked, so the repository's label list acts as an allowlist — it cannot invent vocabulary.
+
+Two trade-offs a reviewer should know. GitHub's label space has no PR gate, so the control for R3 is the RACI approval path rather than code review. And because a marker records eligibility rather than authorship, the same label can be applied by the classifier or by a person: authorship and rollback both read from the GitHub issue timeline (labeled events carry the actor), not from the label name.
 
 **Metrics are separate from the UI.** `src/metrics.py` imports pandas and yaml
 but not Streamlit, so the same computations can be called from a scheduled job
