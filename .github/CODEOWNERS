@@ -15,8 +15,13 @@
 #   Ludwig Cardoso   monitoring  KPIs, thresholds, baselines
 #   William Makino   security    censoring layer, PII incident response
 #
-# TODO before merge: replace the placeholder handles below with the real
-# GitHub usernames. An unresolvable handle silently disables the rule.
+# Handles below are verified against the GitHub users API. Re-verify after any
+# team change: an unresolvable handle silently disables its rule rather than
+# failing, so a typo here reads as "no review required" instead of an error.
+#
+# NOT YET BINDING: branch protection with "Require review from Code Owners"
+# is not enabled on `main`, so this file currently documents routing rather
+# than enforcing it. See R9 in the Phase 3 report.
 
 # Default — the lead reviews anything not claimed by a specific owner.
 *                               @barbaraalfaro17
