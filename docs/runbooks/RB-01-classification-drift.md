@@ -74,7 +74,7 @@ scores sat within the frozen baselines in `config/thresholds.yaml`.**
 |---|---|
 | 1 | Propose rollback to the last known-good model/prompt version, **or** a retune with hold-out results against the frozen baselines |
 | 2 | Barbara approves the deploy (RACI — *Deploy a new model or prompt version*) |
-| 3 | If the taxonomy changed, remove classifier-applied labels matching `AI_*` — bounded because human-applied labels carry no prefix |
+| 3 | If the taxonomy changed, identify classifier-applied labels from each issue's timeline (labeled events actioned by the bot) and remove only those. The label name no longer distinguishes them from human-applied instances, so a name-based sweep would strip both |
 | 4 | Re-baselining is a **separate** approval, not a side effect of the deploy. Ludwig reviews, Barbara approves |
 | 5 | Confirm the breached KPI returns to *Within limit* on the next sprint re-score |
 
